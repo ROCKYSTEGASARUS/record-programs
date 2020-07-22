@@ -1,0 +1,28 @@
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+#include<conio.h>
+char caps_check(char*);
+int main()
+{
+char string[20],letter;
+clrscr();
+printf("enter a string\n");
+scanf("%s",string);
+letter=caps_check(string);
+if(letter==0)
+{
+printf("no capital letters in %s.\n",string);
+}
+else
+{printf("the first capital letter in %s is %c.\n",string,letter);
+}getch();return 0;}
+char caps_check(char *string)
+{int i=0;
+while(string[i]!='\0')
+{if(isupper(string[i]))
+{return string[i];
+}
+i++;
+}return 0;
+}

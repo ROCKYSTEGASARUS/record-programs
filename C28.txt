@@ -1,0 +1,123 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+#include<string.h>
+#define MINIBAL 500
+struct Bank_account
+{
+char no[10];
+char name[20];
+char balance[15];
+};
+struct Bank_account acc;
+void main()
+{ long int pos1,pos2,pos;
+FILE *fp;
+char *ano,*amt;
+char choice;
+int type,flag=0;
+float bal;
+do
+{
+clrscr();
+fflush(stdin);
+printf("1.add a new account holder\n");
+printf("2.display\n");
+printf("3.deposit or withdraw\n");
+printf("4.number of account holder balance less than minimum balance\n");
+printf("5.delete\n");
+printf("6.stop\n");
+printf("enter your choice:");
+choice=getchar();
+switch(choice)
+{
+case'1':
+fflush(stdin);
+fp=fopen("acc.dat","a");
+printf("\n enter the account number:");
+gets(acc.no);
+printf("\n enter the account holder name:");
+gets(acc.name);
+printf("\n enter initial amount to deposit:");
+gets(acc.balance);
+fseek(fp,0,2);
+fwrite(&acc,sizeof(acc),1,fp);
+fclose(fp);
+break;
+case'2':
+fp=fopen("acc.dat","r");
+if(fp==NULL)
+printf("\n file is empty");
+else
+{printf("\n a/c number \t a/c holder name\t balance\n");
+while(fread(&acc,sizeof(acc),1,fp)==1)
+printf("%-10s\t\t%-20s\t%s\n",acc.no,acc.name,acc.balance);
+fclose(fp);
+}
+break;
+case'3':
+fflush(stdin);
+flag=0;
+fp=fopen("acc.dat","r+");
+printf("\n enter the account number:");
+gets(ano);
+for(pos1=ftell(fp);fread(&acc,sizeof(acc),1,fp)==1;pos1=ftell(fp))
+{
+if(strcmp(acc.no,ano)==0)
+{
+printf("\n enter the type1 for deposit & 2 for withdraw:");
+scanf("%d",&type);
+printf("\n your current balance is:%s",acc.balance);
+printf("\nenter the amount to transcat:");
+fflush(stdin);
+gets(amt);
+if(type==1)
+bal=atof(acc.balance)+atof(amt);
+else{
+bal=atof(acc.balance)-atof(amt);
+if(bal<0)
+{printf("\n rs.%s not available in your a/c\n",amt);
+flag=2;
+break;
+}
+}
+flag++;
+break;
+}}
+if(flag==1)
+{
+pos2=ftell(fp);
+pos=pos2-pos1;
+fseek(fp,-pos,1);
+sprintf(amt,"%.2f",bal);
+strcpy(acc.balance,amt);
+fwrite(&acc,sizeof(acc),1,fp);
+}
+else if(flag==0)
+printf("\n a/c number not exists...check it again");
+fclose(fp);
+break;
+case'4':
+fp=fopen("acc.dat","r");
+flag=0;
+while(fread(&acc,sizeof(acc),1,fp)==1)
+{
+bal=atof(acc.balance);
+if(bal<MINIBAL)
+flag++;
+}
+printf("\n the number of account holder whose balance less than minimum balance:%d",flag);
+fclose(fp);
+break;
+case'5':
+remove("acc.dat");
+break;
+case'6':
+fclose(fp);
+exit(0);
+}
+printf("\n press any key to continueee");
+getch();
+}
+while(choice!='6');
+}
